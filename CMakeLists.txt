@@ -11,14 +11,20 @@ conan_basic_setup()
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-add_executable(demo1_HelloWorld demo1.cpp)
-target_link_libraries(demo1_HelloWorld ${CONAN_LIBS})
+# Define the directory containing the source files
+set(SOURCE_DIR src)
 
-add_executable(demo2CreateGrid demo2CreateGrid.cpp)
-target_link_libraries(demo2CreateGrid ${CONAN_LIBS})
+# Use file(GLOB) to collect all .cpp files
+file(GLOB CPP_SOURCES "${SOURCE_DIR}/*.cpp")
 
-add_executable(demo3MakeSphere demo3MakeSphere.cpp)
-target_link_libraries(demo3MakeSphere ${CONAN_LIBS})
-
-add_executable(demo4 demo4.cpp)
-target_link_libraries(demo4 ${CONAN_LIBS})
+# Loop over all collected .cpp files
+foreach(SOURCE_FILE IN LISTS CPP_SOURCES)
+    # Get the filename without path and extension
+    get_filename_component(EXECUTABLE_NAME ${SOURCE_FILE} NAME_WE)
+    
+    # Add an executable for each source file
+    add_executable(${EXECUTABLE_NAME} ${SOURCE_FILE})
+    
+    # Link the libraries
+    target_link_libraries(${EXECUTABLE_NAME} ${CONAN_LIBS})
+endforeach()
